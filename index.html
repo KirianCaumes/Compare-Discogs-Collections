@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+</head>
+
+</html>
+<form method="POST">
+    <div class="container">
+        <br />
+        <h1 class="title">Get difference</h1>
+        <div class="columns">
+            <div class="column">
+                <div class="field">
+                    <label class="label">User One</label>
+                    <div class="control">
+                        <input class="input" type="text" placeholder="User One" name="userone">
+                    </div>
+                </div>
+            </div>
+            <div class="column">
+                <div class="field">
+                    <label class="label">User Two</label>
+                    <div class="control">
+                        <input class="input" type="text" placeholder="User One" name="usertwo">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="field">
+            <div class="control">
+                <label class="radio">
+                    <input type="radio" name="isCollection" value="true">
+                    Collection
+                </label>
+                <label class="radio">
+                    <input type="radio" name="isCollection" value="false">
+                    Wantlist
+                </label>
+            </div>
+        </div>
+        <br />
+        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+            <thead>
+                <tr>
+                    <th>Img</th>
+                    <th>Infos</th>
+                    <th>Format</th>
+                    <th>Year</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#items}}
+                <tr>
+                    <td><img src="{{basic_information.thumb}}" style="max-width:75px;"></td>
+                    <td>
+                        {{#basic_information.artists}}
+                        <a href="https://www.discogs.com/en/artist/{{id}}" target="_blank">{{name}}</a> -
+                        {{/basic_information.artists}}
+                        <a href="https://www.discogs.com/en/release/{{id}}"
+                            target="_blank">{{basic_information.title}}</a>
+                        (
+                        {{#basic_information.labels}}
+                        {{name}} -
+                        {{/basic_information.labels}}
+
+                        {{#basic_information.labels}}
+                        {{catno}} -
+                        {{/basic_information.labels}}
+                        )
+                    </td>
+                    <td>
+                        {{#basic_information.formats}}
+                        {{text}} - {{name}} - {{#description}}{{.}} - {{/description}}
+                        {{/basic_information.formats}}
+                    </td>
+                    <td>{{basic_information.year}}</td>
+                </tr>
+                {{/items}}
+            </tbody>
+        </table>
+
+        <br />
+        <button type="submit" class="button is-link">Send</button>
+    </div>
+    <br />
+</form>
