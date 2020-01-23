@@ -4,15 +4,16 @@ const rp = require('request-promise')
 const fs = require('fs')
 const mustache = require('mustache')
 var bodyParser = require('body-parser')
-app.use(bodyParser.json());       // to support JSON-encoded bodies
-app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({
     extended: true
-}));
+}))
 
 const global = {
     baseUrl: "https://api.discogs.com/",
-    collection: "users/{username}/collection/folders/0/releases?per_page=500",
-    wantlist: "/users/{username}/wants?per_page=500"
+    collection: "users/{username}/collection/folders/0/releases?per_page=500&sort=year&sort_order=asc",
+    wantlist: "/users/{username}/wants?per_page=500&sort=year&sort_order=asc"
 }
 
 const params = {
@@ -56,7 +57,22 @@ app.post('/', (req, res) => {
                     mustache.render(
                         fs.readFileSync("index.html").toString(),
                         {
-                            items: userTwo.filter(el => !userOneIds.includes(el.id))
+                            items: userTwo.map(el => {
+                                return {
+                                    ...el,
+                                    include: userOneIds.includes(el.id)
+                                }
+                            }),
+                            total: {
+                                userone: userOneIds.length,
+                                usertwo: userTwo.map(x => x.id).length,
+                                common: userTwo.filter(el => userOneIds.includes(el.id)).length
+                            },
+                            value: {
+                                userone, usertwo,
+                                isCollection: JSON.parse(isCollection),
+                                isWantlist: !JSON.parse(isCollection)
+                            }
                         }
                     )
                 )
@@ -69,13 +85,28 @@ app.post('/', (req, res) => {
                     mustache.render(
                         fs.readFileSync("index.html").toString(),
                         {
-                            items: userTwo.filter(el => !userOneIds.includes(el.id))
+                            items: userTwo.map(el => {
+                                return {
+                                    ...el,
+                                    include: userOneIds.includes(el.id)
+                                }
+                            }),
+                            total: {
+                                userone: userOneIds.length,
+                                usertwo: userTwo.map(x => x.id).length,
+                                common: userTwo.filter(el => userOneIds.includes(el.id)).length
+                            },
+                            value: {
+                                userone, usertwo,
+                                isCollection: JSON.parse(isCollection),
+                                isWantlist: !JSON.parse(isCollection)
+                            }
                         }
                     )
                 )
             }
         })
-    .catch(err => res.json(err || 'User Not found'))
+        .catch(err => res.json(err || 'User Not found'))
 })
 
-app.listen(3000, () => console.log('App listening on port 3000'))
+app.listen(process.env.PORT || 3000)

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" style="background-color: lightgray;">
 
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
@@ -8,7 +8,6 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
 </head>
 
-</html>
 <form method="POST">
     <div class="container">
         <br />
@@ -18,7 +17,7 @@
                 <div class="field">
                     <label class="label">User One</label>
                     <div class="control">
-                        <input class="input" type="text" placeholder="User One" name="userone">
+                        <input class="input" type="text" placeholder="User One" name="userone" required value="{{value.userone}}">
                     </div>
                 </div>
             </div>
@@ -26,7 +25,7 @@
                 <div class="field">
                     <label class="label">User Two</label>
                     <div class="control">
-                        <input class="input" type="text" placeholder="User One" name="usertwo">
+                        <input class="input" type="text" placeholder="User One" name="usertwo" required value="{{value.usertwo}}">
                     </div>
                 </div>
             </div>
@@ -34,16 +33,17 @@
         <div class="field">
             <div class="control">
                 <label class="radio">
-                    <input type="radio" name="isCollection" value="true">
+                    <input type="radio" name="isCollection" value="true" required {{#value.isCollection}}checked{{/value.isCollection}}>
                     Collection
                 </label>
                 <label class="radio">
-                    <input type="radio" name="isCollection" value="false">
+                    <input type="radio" name="isCollection" value="false" required {{#value.isWantlist}}checked{{/value.isWantlist}}>
                     Wantlist
                 </label>
             </div>
         </div>
-        <br />
+        <button type="submit" class="button is-link">Check</button>
+        <br /><br />
         <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
             <thead>
                 <tr>
@@ -55,7 +55,7 @@
             </thead>
             <tbody>
                 {{#items}}
-                <tr>
+                <tr class="{{#include}}is-selected{{/include}}">
                     <td><img src="{{basic_information.thumb}}" style="max-width:75px;"></td>
                     <td>
                         {{#basic_information.artists}}
@@ -81,11 +81,19 @@
                     <td>{{basic_information.year}}</td>
                 </tr>
                 {{/items}}
-            </tbody>
+            </tbody>            
+            <thead>
+                <tr>
+                    <th></th>
+                    <!-- <th>User one owns {{total.userone}} of user two's {{total.usertwo}} albums.</th> -->
+                    <th>{{value.userone}}: {{total.userone}} / {{value.usertwo}}: {{total.usertwo}} / {{value.userone}} owns {{total.common}} of user {{value.usertwo}}'s albums.</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
         </table>
-
-        <br />
-        <button type="submit" class="button is-link">Send</button>
     </div>
     <br />
 </form>
+
+</html>
