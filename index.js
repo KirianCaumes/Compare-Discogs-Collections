@@ -26,134 +26,124 @@ app.get('/', (req, res) => {
 })
 
 app.post('/', async (req, res) => {
-    const { userone, usertwo, isCollection } = req.body
+    const { userone, usertwo, isCollection, band } = req.body
 
-    let requestsCount = []
-    requestsCount.push(rp({
-        uri: global.baseUrl + global.folders.replace('{username}', userone) + params.token,
-        method: 'GET',
-        headers: { 'User-Agent': 'pouet' }
-    }))
-    requestsCount.push(rp({
-        uri: global.baseUrl + global.folders.replace('{username}', usertwo) + params.token,
-        method: 'GET',
-        headers: { 'User-Agent': 'pouet' }
-    }))
-
+    //Get number of pages
     let count = { userOne: 0, userTwo: 0 }
-    await Promise.all(requestsCount)
+    await Promise.all([
+        rp({
+            uri: global.baseUrl + global.folders.replace('{username}', userone) + params.token,
+            method: 'GET',
+            headers: { 'User-Agent': 'pouet' }
+        }),
+        rp({
+            uri: global.baseUrl + global.folders.replace('{username}', usertwo) + params.token,
+            method: 'GET',
+            headers: { 'User-Agent': 'pouet' }
+        })
+    ])
         .then(([userOne, userTwo]) => {
             count.userOne = Math.ceil(JSON.parse(userOne).folders[0].count / 500)
             count.userTwo = Math.ceil(JSON.parse(userTwo).folders[0].count / 500)
         })
         .catch(err => res.json(err || 'User Not found'))
 
-    let items = { userOne: 0, userTwo: 0 }
-    let requests = []
-    for (let i = 0; i < count.userOne; i++) {
-        console.log(global.baseUrl + (JSON.parse(isCollection) ? global.collection : global.wantlist).replace('{username}', userone) + params.token + "&page=" + (i + 1))
-        requests.push(rp({
-            uri: global.baseUrl + (JSON.parse(isCollection) ? global.collection : global.wantlist).replace('{username}', userone) + params.token + "&page=" + (i + 1),
-            method: 'GET',
-            headers: {
-                'User-Agent': 'pouet'
-            },
-        }))
-    }
-    console.log("cc")
+    //Get items
+    let items = { userOne: [], userTwo: [] }
 
-    await Promise.all(requests)
-        .then((data) => {
-            let els = []
-            // data.forEach(x => console.log(x.releases[0]))
-            JSON.parse(data).forEach(x => x.releases.forEach(y => els.push(y)))
-            console.log(els)
-            items.userOne = els
+    let result = []
+
+    //...from user one
+    result.push(new Promise((resolve, reject) => {
+        let requests = []
+        for (let i = 0; i < count.userOne; i++) {
+            requests.push(rp({
+                uri: global.baseUrl + (JSON.parse(isCollection) ? global.collection : global.wantlist).replace('{username}', userone) + params.token + "&page=" + (i + 1),
+                method: 'GET',
+                headers: {
+                    'User-Agent': 'pouet'
+                },
+            }))
+        }
+
+        Promise.all(requests)
+            .then((data) => {
+                let els = []
+                for (const x of JSON.parse('[' + data + ']')) {
+                    if (JSON.parse(isCollection)) {
+                        els = [...els, ...x.releases]
+                    } else {
+                        els = [...els, ...x.wants]
+                    }
+                }
+                // items.userOne = els
+                resolve(els)
+            })
+            .catch(err => reject(err || 'User Not found'))
+    }))
+
+
+    //...from user two
+    result.push(new Promise((resolve, reject) => {
+        requests = []
+        for (let i = 0; i < count.userTwo; i++) {
+            requests.push(rp({
+                uri: global.baseUrl + (JSON.parse(isCollection) ? global.collection : global.wantlist).replace('{username}', usertwo) + params.token + "&page=" + (i + 1),
+                method: 'GET',
+                headers: {
+                    'User-Agent': 'pouet'
+                },
+            }))
+        }
+        Promise.all(requests)
+            .then((data) => {
+                let els = []
+                for (const x of JSON.parse('[' + data + ']')) {
+                    if (JSON.parse(isCollection)) {
+                        els = [...els, ...x.releases]
+                    } else {
+                        els = [...els, ...x.wants]
+                    }
+                }
+                // items.userTwo = els
+                resolve(els)
+            })
+            .catch(err => reject(err || 'User Not found'))
+    }))
+
+    await Promise.all(result)
+        .then(([dataone, datatwo]) => {
+            items.userOne = dataone
+            items.userTwo = datatwo
         })
         .catch(err => res.json(err || 'User Not found'))
 
-    res.json(items)
+    //Render
+    userOneIds = items.userOne.map(x => x.id)
+    itemsFound = items.userTwo
+        .map(el => { return { ...el, include: userOneIds.includes(el.id) } })
+        .filter(el => el.basic_information.artists.every(x => x.name ? x.name.toLowerCase().includes(band ? band.toLowerCase() : '') : null))
 
-    // requests = []
-    // for (let i = 0; i < count.userTwo; i++) {
-    //     requests.push(rp({
-    //         uri: global.baseUrl + (JSON.parse(isCollection) ? global.collection : global.wantlist).replace('{username}', usertwo) + params.token + "&page=" + i,
-    //         method: 'GET',
-    //         headers: {
-    //             'User-Agent': 'pouet'
-    //         },
-    //     }))
-    // }
-    // await Promise.all(requests)
-    //     .then((data) => {
-    //         items.userTwo = data.map(x => x.releases)
-    //     })
-    //     .catch(err => res.json(err || 'User Not found'))
-
-    // res.json(count)
-
-
-    // Promise.all(requests)
-    //     .then(([userOne, userTwo]) => {
-    //         if (JSON.parse(isCollection)) {
-    //             userOne = JSON.parse(userOne).releases
-    //             userTwo = JSON.parse(userTwo).releases
-    //             userOneIds = userOne.map(x => x.id)
-
-    //             res.send(
-    //                 mustache.render(
-    //                     fs.readFileSync("index.html").toString(),
-    //                     {
-    //                         items: userTwo.map(el => {
-    //                             return {
-    //                                 ...el,
-    //                                 include: userOneIds.includes(el.id)
-    //                             }
-    //                         }),
-    //                         total: {
-    //                             userone: userOneIds.length,
-    //                             usertwo: userTwo.map(x => x.id).length,
-    //                             common: userTwo.filter(el => userOneIds.includes(el.id)).length
-    //                         },
-    //                         value: {
-    //                             userone, usertwo,
-    //                             isCollection: JSON.parse(isCollection),
-    //                             isWantlist: !JSON.parse(isCollection)
-    //                         }
-    //                     }
-    //                 )
-    //             )
-    //         } else {
-    //             userOne = JSON.parse(userOne).wants
-    //             userTwo = JSON.parse(userTwo).wants
-    //             userOneIds = userOne.map(x => x.id)
-
-    //             res.send(
-    //                 mustache.render(
-    //                     fs.readFileSync("index.html").toString(),
-    //                     {
-    //                         items: userTwo.map(el => {
-    //                             return {
-    //                                 ...el,
-    //                                 include: userOneIds.includes(el.id)
-    //                             }
-    //                         }),
-    //                         total: {
-    //                             userone: userOneIds.length,
-    //                             usertwo: userTwo.map(x => x.id).length,
-    //                             common: userTwo.filter(el => userOneIds.includes(el.id)).length
-    //                         },
-    //                         value: {
-    //                             userone, usertwo,
-    //                             isCollection: JSON.parse(isCollection),
-    //                             isWantlist: !JSON.parse(isCollection)
-    //                         }
-    //                     }
-    //                 )
-    //             )
-    //         }
-    //     })
-    //     .catch(err => res.json(err || 'User Not found'))
+    res.send(
+        mustache.render(
+            fs.readFileSync("index.html").toString(),
+            {
+                items: itemsFound,
+                total: {
+                    userone: userOneIds.length,
+                    usertwo: itemsFound.length,
+                    common: itemsFound.filter(el => userOneIds.includes(el.id)).length
+                },
+                value: {
+                    userone: userone,
+                    usertwo: usertwo,
+                    band: band,
+                    isCollection: JSON.parse(isCollection),
+                    isWantlist: !JSON.parse(isCollection)
+                }
+            }
+        )
+    )
 })
 
 app.listen(process.env.PORT || 3000)

@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 
-<html lang="en" style="background-color: lightgray;">
+<html lang="en" style="background: linear-gradient(to bottom, #bdc3c7, #2c3e50);min-height: 100vh;">
 
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+    <title>Get difference between two Discogs collection</title>
 </head>
 
 <form method="POST">
@@ -17,7 +18,8 @@
                 <div class="field">
                     <label class="label">User One</label>
                     <div class="control">
-                        <input class="input" type="text" placeholder="User One" name="userone" required value="{{value.userone}}">
+                        <input class="input" type="text" placeholder="User One" name="userone" required
+                            value="{{value.userone}}">
                     </div>
                 </div>
             </div>
@@ -25,25 +27,36 @@
                 <div class="field">
                     <label class="label">User Two</label>
                     <div class="control">
-                        <input class="input" type="text" placeholder="User One" name="usertwo" required value="{{value.usertwo}}">
+                        <input class="input" type="text" placeholder="User One" name="usertwo" required
+                            value="{{value.usertwo}}">
                     </div>
                 </div>
             </div>
         </div>
         <div class="field">
+            <label class="label">Filter on band's name</label>
+            <div class="control">
+                <input class="input" type="text" placeholder="Band's name" name="band"
+                    value="{{value.band}}">
+            </div>
+        </div>
+        <div class="field">
             <div class="control">
                 <label class="radio">
-                    <input type="radio" name="isCollection" value="true" required {{#value.isCollection}}checked{{/value.isCollection}}>
+                    <input type="radio" name="isCollection" value="true" required
+                        {{#value.isCollection}}checked{{/value.isCollection}}>
                     Collection
                 </label>
                 <label class="radio">
-                    <input type="radio" name="isCollection" value="false" required {{#value.isWantlist}}checked{{/value.isWantlist}}>
+                    <input type="radio" name="isCollection" value="false" required
+                        {{#value.isWantlist}}checked{{/value.isWantlist}}>
                     Wantlist
                 </label>
             </div>
         </div>
         <button type="submit" class="button is-link">Check</button>
         <br /><br />
+        {{#items.length}}
         <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
             <thead>
                 <tr>
@@ -56,7 +69,7 @@
             <tbody>
                 {{#items}}
                 <tr class="{{#include}}is-selected{{/include}}">
-                    <td><img src="{{basic_information.thumb}}" style="max-width:75px;"></td>
+                    <td><img src="{{basic_information.thumb}}" style="max-width:75px;" loading="lazy"></td>
                     <td>
                         {{#basic_information.artists}}
                         <a href="https://www.discogs.com/en/artist/{{id}}" target="_blank">{{name}}</a> -
@@ -81,17 +94,19 @@
                     <td>{{basic_information.year}}</td>
                 </tr>
                 {{/items}}
-            </tbody>            
+            </tbody>
             <thead>
                 <tr>
                     <th></th>
                     <!-- <th>User one owns {{total.userone}} of user two's {{total.usertwo}} albums.</th> -->
-                    <th>{{value.userone}}: {{total.userone}} / {{value.usertwo}}: {{total.usertwo}} / {{value.userone}} owns {{total.common}} of user {{value.usertwo}}'s albums.</th>
+                    <th>{{value.userone}}: {{total.userone}} / {{value.usertwo}}: {{total.usertwo}} / {{value.userone}}
+                        owns {{total.common}} of user {{value.usertwo}}'s albums.</th>
                     <th></th>
                     <th></th>
                 </tr>
             </thead>
         </table>
+        {{/items.length}}
     </div>
     <br />
 </form>
