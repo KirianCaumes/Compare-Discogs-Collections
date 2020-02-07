@@ -9,6 +9,9 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({
     extended: true
 }))
+app.use( express.static(__dirname + '/node_modules/bulma/css'));
+app.use( express.static(__dirname + '/node_modules/@fortawesome/fontawesome-free/js'));
+app.use( express.static(__dirname + '/style'));
 
 const global = {
     baseUrl: "https://api.discogs.com/",

@@ -1,14 +1,23 @@
 <!DOCTYPE html>
 
-<html lang="en" style="background: linear-gradient(to bottom, #bdc3c7, #2c3e50);min-height: 100vh;">
+<html lang="en" style="background-color:#1f2424;min-height: 100vh;">
 
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome.min.css">
+    <link rel="stylesheet" type="text/css" href="brands.min.css">
+    <link rel="stylesheet" type="text/css" href="solid.min.css">
+    <link rel="stylesheet" type="text/css" href="bulma.min.css">
+
+    <script defer src="brands.js"></script>
+    <script defer src="solid.js"></script>
+    <script defer src="fontawesome.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="./bulmaswatch.min.css">
     <title>Get difference between two Discogs collection</title>
 </head>
-
+<i class="fas fa-user"></i>
 <form method="POST">
     <div class="container">
         <br />
@@ -18,43 +27,73 @@
                 <div class="field">
                     <label class="label">User One</label>
                     <div class="control">
-                        <input class="input" type="text" placeholder="User One" name="userone" required
+                        <input class="input" type="text" placeholder="User One" name="userone" required id="userone"
                             value="{{value.userone}}">
                     </div>
                 </div>
+            </div>
+            <div style="display: flex;justify-content: flex-end;flex-direction: column;padding: .75rem 0;">
+                <button type="button" class="button is-link" onclick="reverse();">
+                    <span class="icon is-small">
+                        <i class="fas fa-sync-alt"></i>
+                    </span>
+                </button>
             </div>
             <div class="column">
                 <div class="field">
                     <label class="label">User Two</label>
                     <div class="control">
-                        <input class="input" type="text" placeholder="User One" name="usertwo" required
+                        <input class="input" type="text" placeholder="User One" name="usertwo" required id="usertwo"
                             value="{{value.usertwo}}">
                     </div>
                 </div>
             </div>
         </div>
-        <div class="field">
-            <label class="label">Filter on band's name</label>
-            <div class="control">
-                <input class="input" type="text" placeholder="Band's name" name="band"
-                    value="{{value.band}}">
+        <div class="columns is-vcentered">
+            <div class="column">
+                <div class="field">
+                    <label class="label">Filter on band's name</label>
+                    <div class="control">
+                        <input class="input" type="text" placeholder="Band's name" name="band" value="{{value.band}}">
+                    </div>
+                </div>
+            </div>
+            <div class="column">
+                <label class="label" style="margin-bottom: 0.25em;">Choice</label>
+                <div class="field"  style="width: 100%;">
+                    <div class="control">
+                        <div class="select is-primary" style="width: 100%;">
+                            <select name="isCollection" style="width: 100%;">
+                                <option value="true" {{#value.isCollection}}selected{{/value.isCollection}}>Collection</option>
+                                <option value="false" {{#value.isWantlist}}selected{{/value.isWantlist}}>Wantlist</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="field">
+                    <div class="control">
+                        <label class="radio">
+                            <input type="radio" name="isCollection" value="true" required
+                                {{#value.isCollection}}checked{{/value.isCollection}}>
+                            Collection
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="isCollection" value="false" required
+                                {{#value.isWantlist}}checked{{/value.isWantlist}}>
+                            Wantlist
+                        </label>
+                    </div>
+                </div> -->
             </div>
         </div>
-        <div class="field">
-            <div class="control">
-                <label class="radio">
-                    <input type="radio" name="isCollection" value="true" required
-                        {{#value.isCollection}}checked{{/value.isCollection}}>
-                    Collection
-                </label>
-                <label class="radio">
-                    <input type="radio" name="isCollection" value="false" required
-                        {{#value.isWantlist}}checked{{/value.isWantlist}}>
-                    Wantlist
-                </label>
-            </div>
-        </div>
-        <button type="submit" class="button is-link">Check</button>
+
+        <br />
+        <button type="submit" class="button is-link">
+            <span class="icon is-small">
+                <i class="fas fa-check"></i>
+            </span>
+            <span>Check</span>
+        </button>
         <br /><br />
         {{#items.length}}
         <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
@@ -110,5 +149,13 @@
     </div>
     <br />
 </form>
+
+<script>
+    function reverse() {
+        let temp = document.querySelector('#usertwo').value
+        document.querySelector('#usertwo').value = document.querySelector('#userone').value
+        document.querySelector('#userone').value = temp
+    }
+</script>
 
 </html>
