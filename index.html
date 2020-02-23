@@ -5,6 +5,7 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="index.css">
     <link rel="stylesheet" type="text/css" href="fontawesome.min.css">
     <link rel="stylesheet" type="text/css" href="brands.min.css">
     <link rel="stylesheet" type="text/css" href="solid.min.css">
@@ -70,24 +71,9 @@
                         </div>
                     </div>
                 </div>
-                <!-- <div class="field">
-                    <div class="control">
-                        <label class="radio">
-                            <input type="radio" name="isCollection" value="true" required
-                                {{#value.isCollection}}checked{{/value.isCollection}}>
-                            Collection
-                        </label>
-                        <label class="radio">
-                            <input type="radio" name="isCollection" value="false" required
-                                {{#value.isWantlist}}checked{{/value.isWantlist}}>
-                            Wantlist
-                        </label>
-                    </div>
-                </div> -->
             </div>
         </div>
 
-        <br />
         <button type="submit" class="button is-link">
             <span class="icon is-small">
                 <i class="fas fa-check"></i>
@@ -96,7 +82,7 @@
         </button>
         <br /><br />
         {{#items.length}}
-        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+        <table class="table is-bordered is-narrow is-fullwidth">
             <thead>
                 <tr>
                     <th>Img</th>
@@ -117,17 +103,34 @@
                             target="_blank">{{basic_information.title}}</a>
                         (
                         {{#basic_information.labels}}
-                        {{name}} -
+                            {{#name}}
+                                {{.}} -
+                            {{/name}}
                         {{/basic_information.labels}}
 
                         {{#basic_information.labels}}
-                        {{catno}} -
+                            {{#catno}}
+                                {{.}} <span class="last-hidden">-</span>
+                            {{/catno}}
                         {{/basic_information.labels}}
                         )
                     </td>
                     <td>
                         {{#basic_information.formats}}
-                        {{text}} - {{name}} - {{#description}}{{.}} - {{/description}}
+                            {{#text}}
+                                {{.}} -
+                            {{/text}}                            
+                            {{#name}}
+                                {{.}} 
+                                {{^description.length}}           
+                                    <span class="last-hidden">-</span>
+                                {{/description.length}}    
+                            {{/name}}    
+                            {{#descriptions.length}}                        
+                                {{#descriptions}}
+                                    {{.}} <span class="last-hidden">-</span>
+                                {{/descriptions}}
+                            {{/descriptions.length}}     
                         {{/basic_information.formats}}
                     </td>
                     <td>{{basic_information.year}}</td>
@@ -137,7 +140,6 @@
             <thead>
                 <tr>
                     <th></th>
-                    <!-- <th>User one owns {{total.userone}} of user two's {{total.usertwo}} albums.</th> -->
                     <th>{{value.userone}}: {{total.userone}} / {{value.usertwo}}: {{total.usertwo}} / {{value.userone}}
                         owns {{total.common}} of user {{value.usertwo}}'s albums.</th>
                     <th></th>

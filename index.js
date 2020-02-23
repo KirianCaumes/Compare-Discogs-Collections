@@ -9,9 +9,9 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({
     extended: true
 }))
-app.use( express.static(__dirname + '/node_modules/bulma/css'));
-app.use( express.static(__dirname + '/node_modules/@fortawesome/fontawesome-free/js'));
-app.use( express.static(__dirname + '/style'));
+app.use(express.static(__dirname + '/node_modules/bulma/css'));
+app.use(express.static(__dirname + '/node_modules/@fortawesome/fontawesome-free/js'));
+app.use(express.static(__dirname + '/style'));
 
 const global = {
     baseUrl: "https://api.discogs.com/",
@@ -33,23 +33,43 @@ app.post('/', async (req, res) => {
 
     //Get number of pages
     let count = { userOne: 0, userTwo: 0 }
-    await Promise.all([
-        rp({
-            uri: global.baseUrl + global.folders.replace('{username}', userone) + params.token,
-            method: 'GET',
-            headers: { 'User-Agent': 'pouet' }
-        }),
-        rp({
-            uri: global.baseUrl + global.folders.replace('{username}', usertwo) + params.token,
-            method: 'GET',
-            headers: { 'User-Agent': 'pouet' }
-        })
-    ])
-        .then(([userOne, userTwo]) => {
-            count.userOne = Math.ceil(JSON.parse(userOne).folders[0].count / 500)
-            count.userTwo = Math.ceil(JSON.parse(userTwo).folders[0].count / 500)
-        })
-        .catch(err => res.json(err || 'User Not found'))
+    if ((JSON.parse(isCollection))) {
+        await Promise.all([
+            rp({
+                uri: global.baseUrl + global.folders.replace('{username}', userone) + params.token,
+                method: 'GET',
+                headers: { 'User-Agent': 'pouet' }
+            }),
+            rp({
+                uri: global.baseUrl + global.folders.replace('{username}', usertwo) + params.token,
+                method: 'GET',
+                headers: { 'User-Agent': 'pouet' }
+            })
+        ])
+            .then(([userOne, userTwo]) => {
+                count.userOne = Math.ceil(JSON.parse(userOne).folders[0].count / 500)
+                count.userTwo = Math.ceil(JSON.parse(userTwo).folders[0].count / 500)
+            })
+            .catch(err => res.json(err || 'User Not found'))
+    } else {
+        await Promise.all([
+            rp({
+                uri: global.baseUrl + global.wantlist.replace('{username}', userone) + params.token + "&page=1",
+                method: 'GET',
+                headers: { 'User-Agent': 'pouet' }
+            }),
+            rp({
+                uri: global.baseUrl + global.wantlist.replace('{username}', usertwo) + params.token + "&page=1",
+                method: 'GET',
+                headers: { 'User-Agent': 'pouet' }
+            })
+        ])
+            .then(([userOne, userTwo]) => {
+                count.userOne = Math.ceil(JSON.parse(userOne).pagination.pages)
+                count.userTwo = Math.ceil(JSON.parse(userTwo).pagination.pages)
+            })
+            .catch(err => res.json(err || 'User Not found'))
+    }
 
     //Get items
     let items = { userOne: [], userTwo: [] }
