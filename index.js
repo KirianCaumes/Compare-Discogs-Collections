@@ -1,172 +1,121 @@
 const express = require('express')
 const app = express()
-const rp = require('request-promise')
 const fs = require('fs')
 const mustache = require('mustache')
-var bodyParser = require('body-parser')
+const bodyParser = require('body-parser')
+
+const Discogs = require('./models/discogs')
+const { WANTLIST, COLLECTION, COLLECTIONVSWANTLIST } = require('./constants')
 
 app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({
-    extended: true
-}))
-app.use(express.static(__dirname + '/node_modules/bulma/css'));
-app.use(express.static(__dirname + '/node_modules/@fortawesome/fontawesome-free/js'));
-app.use(express.static(__dirname + '/style'));
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(express.static(__dirname + '/node_modules/bulma/css'))
+app.use(express.static(__dirname + '/node_modules/@fortawesome/fontawesome-free/js'))
+app.use(express.static(__dirname + '/style'))
 
-const global = {
-    baseUrl: "https://api.discogs.com/",
-    collection: "users/{username}/collection/folders/0/releases?per_page=500&sort=year&sort_order=asc",
-    wantlist: "/users/{username}/wants?per_page=500&sort=year&sort_order=asc",
-    folders: "/users/{username}/collection/folders?"
-}
-
-const params = {
-    token: "&token=uYHzoNUnYYEGTsaXPpAkrrWoaZYQOVPweJQyerdI",
-}
+Object.defineProperty(Array.prototype, "toUniqId", {
+    enumerable: false,
+    writable: true,
+    value: function () {
+        const result = []
+        const map = new Map()
+        for (const item of this) {
+            if (!map.has(item.id)) {
+                map.set(item.id, true)
+                result.push(item)
+            }
+        }
+        return result
+    }
+})
 
 app.get('/', (req, res) => {
-    res.send(mustache.render(fs.readFileSync("index.html").toString(), {}))
+    res.send(render({}))
 })
 
 app.post('/', async (req, res) => {
-    const { userone, usertwo, isCollection, band } = req.body
+    const { userone, usertwo, search, band } = req.body
+
+    const discogs = new Discogs()
 
     //Get number of pages
-    let count = { userOne: 0, userTwo: 0 }
-    if ((JSON.parse(isCollection))) {
-        await Promise.all([
-            rp({
-                uri: global.baseUrl + global.folders.replace('{username}', userone) + params.token,
-                method: 'GET',
-                headers: { 'User-Agent': 'pouet' }
-            }),
-            rp({
-                uri: global.baseUrl + global.folders.replace('{username}', usertwo) + params.token,
-                method: 'GET',
-                headers: { 'User-Agent': 'pouet' }
-            })
-        ])
-            .then(([userOne, userTwo]) => {
-                count.userOne = Math.ceil(JSON.parse(userOne).folders[0].count / 500)
-                count.userTwo = Math.ceil(JSON.parse(userTwo).folders[0].count / 500)
-            })
-            .catch(err => res.json(err || 'User Not found'))
-    } else {
-        await Promise.all([
-            rp({
-                uri: global.baseUrl + global.wantlist.replace('{username}', userone) + params.token + "&page=1",
-                method: 'GET',
-                headers: { 'User-Agent': 'pouet' }
-            }),
-            rp({
-                uri: global.baseUrl + global.wantlist.replace('{username}', usertwo) + params.token + "&page=1",
-                method: 'GET',
-                headers: { 'User-Agent': 'pouet' }
-            })
-        ])
-            .then(([userOne, userTwo]) => {
-                count.userOne = Math.ceil(JSON.parse(userOne).pagination.pages)
-                count.userTwo = Math.ceil(JSON.parse(userTwo).pagination.pages)
-            })
-            .catch(err => res.json(err || 'User Not found'))
-    }
+    let numberPages = { userOne: 0, userTwo: 0 }
+    await Promise.all([
+        discogs.getNumberPages({ type: search === COLLECTION || search === COLLECTIONVSWANTLIST ? COLLECTION : WANTLIST, username: userone }),
+        discogs.getNumberPages({ type: search === COLLECTION ? COLLECTION : WANTLIST, username: usertwo })
+    ])
+        .then(([userOne, userTwo]) => {
+            numberPages.userOne = JSON.parse(userOne).pagination.pages
+            numberPages.userTwo = JSON.parse(userTwo).pagination.pages
+        })
+        .catch(err => res.send(render({ error: err ? (JSON.parse(err.error) ? JSON.parse(err.error).message : 'Error') : 'Error', userone, usertwo, band, search })))
 
     //Get items
     let items = { userOne: [], userTwo: [] }
-
-    let result = []
-
-    //...from user one
-    result.push(new Promise((resolve, reject) => {
-        let requests = []
-        for (let i = 0; i < count.userOne; i++) {
-            requests.push(rp({
-                uri: global.baseUrl + (JSON.parse(isCollection) ? global.collection : global.wantlist).replace('{username}', userone) + params.token + "&page=" + (i + 1),
-                method: 'GET',
-                headers: {
-                    'User-Agent': 'pouet'
-                },
-            }))
-        }
-
-        Promise.all(requests)
-            .then((data) => {
-                let els = []
-                for (const x of JSON.parse('[' + data + ']')) {
-                    if (JSON.parse(isCollection)) {
-                        els = [...els, ...x.releases]
-                    } else {
-                        els = [...els, ...x.wants]
-                    }
-                }
-                // items.userOne = els
-                resolve(els)
-            })
-            .catch(err => reject(err || 'User Not found'))
-    }))
-
-
-    //...from user two
-    result.push(new Promise((resolve, reject) => {
-        requests = []
-        for (let i = 0; i < count.userTwo; i++) {
-            requests.push(rp({
-                uri: global.baseUrl + (JSON.parse(isCollection) ? global.collection : global.wantlist).replace('{username}', usertwo) + params.token + "&page=" + (i + 1),
-                method: 'GET',
-                headers: {
-                    'User-Agent': 'pouet'
-                },
-            }))
-        }
-        Promise.all(requests)
-            .then((data) => {
-                let els = []
-                for (const x of JSON.parse('[' + data + ']')) {
-                    if (JSON.parse(isCollection)) {
-                        els = [...els, ...x.releases]
-                    } else {
-                        els = [...els, ...x.wants]
-                    }
-                }
-                // items.userTwo = els
-                resolve(els)
-            })
-            .catch(err => reject(err || 'User Not found'))
-    }))
-
-    await Promise.all(result)
-        .then(([dataone, datatwo]) => {
-            items.userOne = dataone
-            items.userTwo = datatwo
-        })
-        .catch(err => res.json(err || 'User Not found'))
-
-    //Render
-    userOneIds = items.userOne.map(x => x.id)
-    itemsFound = items.userTwo
-        .map(el => { return { ...el, include: userOneIds.includes(el.id) } })
-        .filter(el => el.basic_information.artists.every(x => x.name ? x.name.toLowerCase().includes(band ? band.toLowerCase() : '') : null))
-
-    res.send(
-        mustache.render(
-            fs.readFileSync("index.html").toString(),
-            {
-                items: itemsFound,
-                total: {
-                    userone: userOneIds.length,
-                    usertwo: itemsFound.length,
-                    common: itemsFound.filter(el => userOneIds.includes(el.id)).length
-                },
-                value: {
-                    userone: userone,
-                    usertwo: usertwo,
-                    band: band,
-                    isCollection: JSON.parse(isCollection),
-                    isWantlist: !JSON.parse(isCollection)
+    await Promise.all([
+        discogs.getItems({ type: search === COLLECTION || search === COLLECTIONVSWANTLIST ? COLLECTION : WANTLIST, username: userone, pages: numberPages.userOne }),
+        discogs.getItems({ type: search === COLLECTION ? COLLECTION : WANTLIST, username: usertwo, pages: numberPages.userTwo })
+    ])
+        .then(([userOne, userTwo]) => {
+            for (const x of userOne) {
+                if (search === COLLECTION || search === COLLECTIONVSWANTLIST) {
+                    items.userOne = items.userOne.concat(JSON.parse(x).releases)
+                } else {
+                    items.userOne = items.userOne.concat(JSON.parse(x).wants)
                 }
             }
-        )
-    )
+
+            for (const x of userTwo) {
+                if (search === COLLECTION) {
+                    items.userTwo = items.userTwo.concat(JSON.parse(x).releases)
+                } else {
+                    items.userTwo = items.userTwo.concat(JSON.parse(x).wants)
+                }
+            }
+        })
+        .catch(err => res.send(render({ error: err ? (JSON.parse(err.error) ? JSON.parse(err.error).message : 'Error') : 'Error', userone, usertwo, band, search })))
+
+    res.send(render({ items, userone, usertwo, band, search }))
 })
+
+function render({ items = [], error = null, userone = '', usertwo = '', band = '', search = '' }) {
+    const userOneIds = items.length === 0 ? [] : items.userOne.map(x => x.id)
+    const itemsFound = items.length === 0 ? [] : items.userTwo
+        .map(el => { return { ...el, include: userOneIds.includes(el.id) } })
+        .filter(el => el.basic_information.artists.some(x => x.name ? x.name.toLowerCase().includes(band ? band.toLowerCase() : '') : null))
+        .toUniqId()
+
+    const useroneFilter = items.userOne
+        .filter(el => el.basic_information.artists.some(x => x.name ? x.name.toLowerCase().includes(band ? band.toLowerCase() : '') : null))
+        .toUniqId()
+
+    const usertwoFilter = items.userTwo
+        .filter(el => el.basic_information.artists.some(x => x.name ? x.name.toLowerCase().includes(band ? band.toLowerCase() : '') : null))
+        .toUniqId()
+
+    const commonItems = itemsFound.filter(el => userOneIds.includes(el.id)).length
+
+    return mustache.render(
+        fs.readFileSync("index.html").toString(),
+        {
+            error: error,
+            items: itemsFound,
+            total: {
+                userone: useroneFilter.length,
+                usertwo: usertwoFilter.length,
+                percent: (100 * commonItems / usertwoFilter.length).toFixed(2),
+                common: commonItems
+            },
+            value: {
+                userone: userone,
+                usertwo: usertwo,
+                band: band,
+                isCollection: search === COLLECTION,
+                isWantlist: search === WANTLIST,
+                isCollectionVsWantlist: search === COLLECTIONVSWANTLIST
+            }
+        }
+    )
+}
 
 app.listen(process.env.PORT || 3000)

@@ -16,13 +16,19 @@
     <script defer src="fontawesome.js"></script>
 
     <link rel="stylesheet" type="text/css" href="./bulmaswatch.min.css">
+    <link rel="icon" href="https://a.discogs.com/ed6641bee0b0e4905970f610f5505cf07e0778c3/images/favicon.ico">
     <title>Get difference between two Discogs collection</title>
 </head>
 
 <form method="POST">
     <div class="container">
         <br />
-        <h1 class="title">Get difference</h1>
+        <h1 class="title">Get difference <i class="fas fa-compact-disc"></i></h1>
+        {{#error}}
+        <div class="notification is-danger">
+            {{error}}
+        </div>
+        {{/error}}
         <div class="columns">
             <div class="column">
                 <div class="field">
@@ -60,13 +66,20 @@
                 </div>
             </div>
             <div class="column">
-                <label class="label" style="margin-bottom: 0.25em;">Choice</label>
-                <div class="field"  style="width: 100%;">
+                <label class="label" style="margin-bottom: 0.25em;">Search on</label>
+                <div class="field" style="width: 100%;">
                     <div class="control">
                         <div class="select is-primary" style="width: 100%;">
-                            <select name="isCollection" style="width: 100%;">
-                                <option value="true" {{#value.isCollection}}selected{{/value.isCollection}}>Collection</option>
-                                <option value="false" {{#value.isWantlist}}selected{{/value.isWantlist}}>Wantlist</option>
+                            <select name="search" style="width: 100%;">
+                                <option value="COLLECTION" {{#value.isCollection}}selected{{/value.isCollection}}>
+                                    Collection
+                                </option>
+                                <option value="WANTLIST" {{#value.isWantlist}}selected{{/value.isWantlist}}>
+                                    Wantlist
+                                </option>
+                                <option value="COLLECTIONVSWANTLIST" {{#value.isCollectionVsWantlist}}selected{{/value.isCollectionVsWantlist}}>
+                                    Collection vs Wantlist
+                                </option>
                             </select>
                         </div>
                     </div>
@@ -119,18 +132,18 @@
                         {{#basic_information.formats}}
                             {{#text}}
                                 {{.}} -
-                            {{/text}}                            
+                            {{/text}}
                             {{#name}}
-                                {{.}} 
-                                {{^description.length}}           
+                                {{.}}
+                                {{^description.length}}
                                     <span class="last-hidden">-</span>
-                                {{/description.length}}    
-                            {{/name}}    
-                            {{#descriptions.length}}                        
+                                {{/description.length}}
+                            {{/name}}
+                            {{#descriptions.length}}
                                 {{#descriptions}}
                                     {{.}} <span class="last-hidden">-</span>
                                 {{/descriptions}}
-                            {{/descriptions.length}}     
+                            {{/descriptions.length}}
                         {{/basic_information.formats}}
                     </td>
                     <td>{{basic_information.year}}</td>
@@ -140,8 +153,50 @@
             <thead>
                 <tr>
                     <th></th>
-                    <th>{{value.userone}}: {{total.userone}} / {{value.usertwo}}: {{total.usertwo}} / {{value.userone}}
-                        owns {{total.common}} of user {{value.usertwo}}'s albums.</th>
+                    <th>
+                        {{#value.isCollection}}
+                            <a href="https://www.discogs.com/user/{{value.userone}}/collection" target="_blank">{{value.userone}}</a>
+                        {{/value.isCollection}}
+                        {{#value.isWantlist}}
+                            <a href="https://www.discogs.com/wantlist?user={{value.userone}}" target="_blank">{{value.userone}}</a>
+                        {{/value.isWantlist}}
+                        {{#value.isCollectionVsWantlist}}
+                            <a href="https://www.discogs.com/user/{{value.userone}}/collection" target="_blank">{{value.userone}}</a>
+                        {{/value.isCollectionVsWantlist}}
+                        : {{total.userone}}<br/>  
+
+                        {{#value.isCollection}}
+                            <a href="https://www.discogs.com/user/{{value.usertwo}}/collection" target="_blank">{{value.usertwo}}</a>
+                        {{/value.isCollection}}
+                        {{#value.isWantlist}}
+                            <a href="https://www.discogs.com/wantlist?user={{value.usertwo}}" target="_blank">{{value.usertwo}}</a>
+                        {{/value.isWantlist}}
+                        {{#value.isCollectionVsWantlist}}
+                            <a href="https://www.discogs.com/wantlist?user={{value.usertwo}}" target="_blank">{{value.usertwo}}</a>
+                        {{/value.isCollectionVsWantlist}}
+                        : {{total.usertwo}}<br/>
+
+                        {{#value.isCollection}}
+                            <a href="https://www.discogs.com/user/{{value.userone}}/collection" target="_blank">{{value.userone}}</a>
+                        {{/value.isCollection}}
+                        {{#value.isWantlist}}
+                            <a href="https://www.discogs.com/wantlist?user={{value.userone}}" target="_blank">{{value.userone}}</a>
+                        {{/value.isWantlist}}
+                        {{#value.isCollectionVsWantlist}}
+                            <a href="https://www.discogs.com/user/{{value.userone}}/collection" target="_blank">{{value.userone}}</a>
+                        {{/value.isCollectionVsWantlist}}
+                         owns {{total.common}} of 
+                        {{#value.isCollection}}
+                            <a href="https://www.discogs.com/user/{{value.usertwo}}/collection" target="_blank">{{value.usertwo}}</a>
+                        {{/value.isCollection}}
+                        {{#value.isWantlist}}
+                            <a href="https://www.discogs.com/wantlist?user={{value.usertwo}}" target="_blank">{{value.usertwo}}</a>
+                        {{/value.isWantlist}}
+                        {{#value.isCollectionVsWantlist}}
+                            <a href="https://www.discogs.com/wantlist?user={{value.usertwo}}" target="_blank">{{value.usertwo}}</a>
+                        {{/value.isCollectionVsWantlist}}
+                        's albums ({{total.percent}} %).
+                    </th>
                     <th></th>
                     <th></th>
                 </tr>
