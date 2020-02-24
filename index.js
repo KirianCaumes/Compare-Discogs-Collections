@@ -78,22 +78,22 @@ app.post('/', async (req, res) => {
     res.send(render({ items, userone, usertwo, band, search }))
 })
 
-function render({ items = [], error = null, userone = '', usertwo = '', band = '', search = '' }) {
-    const userOneIds = items.length === 0 ? [] : items.userOne.map(x => x.id)
-    const itemsFound = items.length === 0 ? [] : items.userTwo
+function render({ items = {}, error = null, userone = '', usertwo = '', band = '', search = '' }) {
+    const userOneIds = !items.userOne ? [] : items.userOne.map(x => x.id)
+    const itemsFound = !items.userTwo ? [] : items.userTwo
         .map(el => { return { ...el, include: userOneIds.includes(el.id) } })
         .filter(el => el.basic_information.artists.some(x => x.name ? x.name.toLowerCase().includes(band ? band.toLowerCase() : '') : null))
         .toUniqId()
 
-    const useroneFilter = items.userOne
+    const useroneFilter = !items.userOne ? [] : items.userOne
         .filter(el => el.basic_information.artists.some(x => x.name ? x.name.toLowerCase().includes(band ? band.toLowerCase() : '') : null))
         .toUniqId()
 
-    const usertwoFilter = items.userTwo
+    const usertwoFilter = !items.userTwo ? [] : items.userTwo
         .filter(el => el.basic_information.artists.some(x => x.name ? x.name.toLowerCase().includes(band ? band.toLowerCase() : '') : null))
         .toUniqId()
 
-    const commonItems = itemsFound.filter(el => userOneIds.includes(el.id)).length
+    const commonItems = !itemsFound.length ? [] : itemsFound.filter(el => userOneIds.includes(el.id)).length
 
     return mustache.render(
         fs.readFileSync("index.html").toString(),
