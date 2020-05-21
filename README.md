@@ -1,4 +1,4 @@
-# Discogs Compare Two Collection &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/KirianCaumesDiscogsCompareTwoCollection/blob/master/LICENSE)
+# Discogs Compare Two Collection &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/KirianCaumes/DiscogsCompareTwoCollection/blob/master/LICENSE)
 
 Compare your colletion or wantlist against another user on Discogs
 
