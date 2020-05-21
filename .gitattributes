@@ -1,2 +1,2 @@
-*.html linguist-vendored
-style/* linguist-vendored
+public/*.html linguist-vendored
+public/style/* linguist-vendored
