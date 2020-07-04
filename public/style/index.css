@@ -39,6 +39,7 @@ html {
 
 .table img {
     max-width: 75px;
+    min-height: 45px;
 }
 
 .table a {
