@@ -97,128 +97,133 @@
         </button>
         <br /><br />
         {{#items.length}}
-        <table class="table is-bordered is-narrow is-fullwidth">
-            <thead>
-                <tr>
-                    <th>Img</th>
-                    <th>Infos</th>
-                    <th>Format</th>
-                    <th>Year</th>
-                </tr>
-            </thead>
-            <tbody>
-                {{#items}}
-                <tr class="{{#include}}is-selected{{/include}}">
-                    <td><img src="{{basic_information.thumb}}" loading="lazy"></td>
-                    <td>
-                        {{#basic_information.artists}}
-                        <a href="https://www.discogs.com/en/artist/{{id}}" target="_blank">{{name}}</a> -
-                        {{/basic_information.artists}}
-                        <a href="https://www.discogs.com/en/release/{{id}}"
-                            target="_blank">{{basic_information.title}}</a>
-                        (
-                        {{#basic_information.labels}}
-                        {{#name}}
-                        {{.}} -
-                        {{/name}}
-                        {{/basic_information.labels}}
+        <div class="table-container">
+            <table class="table is-bordered is-narrow is-fullwidth">
+                <thead>
+                    <tr>
+                        <th>Img</th>
+                        <th>Infos</th>
+                        <th>Format</th>
+                        <th>Year</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#items}}
+                    <tr class="{{#include}}is-selected{{/include}}">
+                        <td><img src="{{basic_information.thumb}}" loading="lazy"></td>
+                        <td>
+                            {{#basic_information.artists}}
+                            <a href="https://www.discogs.com/en/artist/{{id}}" target="_blank">{{name}}</a> -
+                            {{/basic_information.artists}}
+                            <a href="https://www.discogs.com/en/release/{{id}}"
+                                target="_blank">{{basic_information.title}}</a>
+                            (
+                            {{#basic_information.labels}}
+                            {{#name}}
+                            {{.}} -
+                            {{/name}}
+                            {{/basic_information.labels}}
 
-                        {{#basic_information.labels}}
-                        {{#catno}}
-                        {{.}} <span class="last-hidden">-</span>
-                        {{/catno}}
-                        {{/basic_information.labels}}
-                        )
-                    </td>
-                    <td>
-                        {{#basic_information.formats}}
-                        {{#text}}
-                        {{.}} -
-                        {{/text}}
-                        {{#name}}
-                        {{.}}
-                        {{^description.length}}
-                        <span class="last-hidden">-</span>
-                        {{/description.length}}
-                        {{/name}}
-                        {{#descriptions.length}}
-                        {{#descriptions}}
-                        {{.}} <span class="last-hidden">-</span>
-                        {{/descriptions}}
-                        {{/descriptions.length}}
-                        {{/basic_information.formats}}
-                    </td>
-                    <td>{{basic_information.year}}</td>
-                </tr>
-                {{/items}}
-            </tbody>
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>
-                        {{#value.isCollection}}
-                        <a href="https://www.discogs.com/user/{{value.userone}}/collection"
-                            target="_blank">{{value.userone}}</a>
-                        {{/value.isCollection}}
-                        {{#value.isWantlist}}
-                        <a href="https://www.discogs.com/wantlist?user={{value.userone}}"
-                            target="_blank">{{value.userone}}</a>
-                        {{/value.isWantlist}}
-                        {{#value.isCollectionVsWantlist}}
-                        <a href="https://www.discogs.com/user/{{value.userone}}/collection"
-                            target="_blank">{{value.userone}}</a>
-                        {{/value.isCollectionVsWantlist}}
-                        : {{total.userone}}<br />
+                            {{#basic_information.labels}}
+                            {{#catno}}
+                            {{.}} <span class="last-hidden">-</span>
+                            {{/catno}}
+                            {{/basic_information.labels}}
+                            )
+                        </td>
+                        <td>
+                            {{#basic_information.formats}}
+                            {{#text}}
+                            {{.}} -
+                            {{/text}}
+                            {{#name}}
+                            {{.}}
+                            {{^description.length}}
+                            <span class="last-hidden">-</span>
+                            {{/description.length}}
+                            {{/name}}
+                            {{#descriptions.length}}
+                            {{#descriptions}}
+                            {{.}} <span class="last-hidden">-</span>
+                            {{/descriptions}}
+                            {{/descriptions.length}}
+                            {{/basic_information.formats}}
+                        </td>
+                        <td>{{basic_information.year}}</td>
+                    </tr>
+                    {{/items}}
+                </tbody>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>
+                            {{#value.isCollection}}
+                            <a href="https://www.discogs.com/user/{{value.userone}}/collection"
+                                target="_blank">{{value.userone}}</a>
+                            {{/value.isCollection}}
+                            {{#value.isWantlist}}
+                            <a href="https://www.discogs.com/wantlist?user={{value.userone}}"
+                                target="_blank">{{value.userone}}</a>
+                            {{/value.isWantlist}}
+                            {{#value.isCollectionVsWantlist}}
+                            <a href="https://www.discogs.com/user/{{value.userone}}/collection"
+                                target="_blank">{{value.userone}}</a>
+                            {{/value.isCollectionVsWantlist}}
+                            : {{total.userone}}<br />
 
-                        {{#value.isCollection}}
-                        <a href="https://www.discogs.com/user/{{value.usertwo}}/collection"
-                            target="_blank">{{value.usertwo}}</a>
-                        {{/value.isCollection}}
-                        {{#value.isWantlist}}
-                        <a href="https://www.discogs.com/wantlist?user={{value.usertwo}}"
-                            target="_blank">{{value.usertwo}}</a>
-                        {{/value.isWantlist}}
-                        {{#value.isCollectionVsWantlist}}
-                        <a href="https://www.discogs.com/wantlist?user={{value.usertwo}}"
-                            target="_blank">{{value.usertwo}}</a>
-                        {{/value.isCollectionVsWantlist}}
-                        : {{total.usertwo}}<br />
+                            {{#value.isCollection}}
+                            <a href="https://www.discogs.com/user/{{value.usertwo}}/collection"
+                                target="_blank">{{value.usertwo}}</a>
+                            {{/value.isCollection}}
+                            {{#value.isWantlist}}
+                            <a href="https://www.discogs.com/wantlist?user={{value.usertwo}}"
+                                target="_blank">{{value.usertwo}}</a>
+                            {{/value.isWantlist}}
+                            {{#value.isCollectionVsWantlist}}
+                            <a href="https://www.discogs.com/wantlist?user={{value.usertwo}}"
+                                target="_blank">{{value.usertwo}}</a>
+                            {{/value.isCollectionVsWantlist}}
+                            : {{total.usertwo}}<br />
 
-                        {{#value.isCollection}}
-                        <a href="https://www.discogs.com/user/{{value.userone}}/collection"
-                            target="_blank">{{value.userone}}</a>
-                        {{/value.isCollection}}
-                        {{#value.isWantlist}}
-                        <a href="https://www.discogs.com/wantlist?user={{value.userone}}"
-                            target="_blank">{{value.userone}}</a>
-                        {{/value.isWantlist}}
-                        {{#value.isCollectionVsWantlist}}
-                        <a href="https://www.discogs.com/user/{{value.userone}}/collection"
-                            target="_blank">{{value.userone}}</a>
-                        {{/value.isCollectionVsWantlist}}
-                        owns {{total.common}} of
-                        {{#value.isCollection}}
-                        <a href="https://www.discogs.com/user/{{value.usertwo}}/collection"
-                            target="_blank">{{value.usertwo}}</a>
-                        {{/value.isCollection}}
-                        {{#value.isWantlist}}
-                        <a href="https://www.discogs.com/wantlist?user={{value.usertwo}}"
-                            target="_blank">{{value.usertwo}}</a>
-                        {{/value.isWantlist}}
-                        {{#value.isCollectionVsWantlist}}
-                        <a href="https://www.discogs.com/wantlist?user={{value.usertwo}}"
-                            target="_blank">{{value.usertwo}}</a>
-                        {{/value.isCollectionVsWantlist}}
-                        's albums ({{total.percent}} %).
-                    </th>
-                    <th></th>
-                    <th></th>
-                </tr>
-            </thead>
-        </table>
+                            {{#value.isCollection}}
+                            <a href="https://www.discogs.com/user/{{value.userone}}/collection"
+                                target="_blank">{{value.userone}}</a>
+                            {{/value.isCollection}}
+                            {{#value.isWantlist}}
+                            <a href="https://www.discogs.com/wantlist?user={{value.userone}}"
+                                target="_blank">{{value.userone}}</a>
+                            {{/value.isWantlist}}
+                            {{#value.isCollectionVsWantlist}}
+                            <a href="https://www.discogs.com/user/{{value.userone}}/collection"
+                                target="_blank">{{value.userone}}</a>
+                            {{/value.isCollectionVsWantlist}}
+                            owns {{total.common}} of
+                            {{#value.isCollection}}
+                            <a href="https://www.discogs.com/user/{{value.usertwo}}/collection"
+                                target="_blank">{{value.usertwo}}</a>
+                            {{/value.isCollection}}
+                            {{#value.isWantlist}}
+                            <a href="https://www.discogs.com/wantlist?user={{value.usertwo}}"
+                                target="_blank">{{value.usertwo}}</a>
+                            {{/value.isWantlist}}
+                            {{#value.isCollectionVsWantlist}}
+                            <a href="https://www.discogs.com/wantlist?user={{value.usertwo}}"
+                                target="_blank">{{value.usertwo}}</a>
+                            {{/value.isCollectionVsWantlist}}
+                            's albums ({{total.percent}} %).
+                        </th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
         {{/items.length}}
+        <p class="credit">By <a href="https://kiriancaumes.fr" target="_blank">Kirian CAUMES</a> - <a
+                href="https://github.com/KirianCaumes/DiscogsCompareTwoCollection" target="_blank">Github</a></p>
+        <br />
+        <br />
     </div>
-    <br />
 </form>
 
 <script>

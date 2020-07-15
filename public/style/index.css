@@ -1,5 +1,5 @@
 html {
-    background-color: #1f2424!important;
+    background-color: #1f2424 !important;
     min-height: 100vh;
 }
 
@@ -51,4 +51,8 @@ html {
 
 .table .last-hidden:last-child {
     display: none;
+}
+
+.credit {
+    position: absolute;
 }
