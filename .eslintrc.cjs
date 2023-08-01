@@ -1,12 +1,11 @@
 module.exports = {
     env: {
-        browser: true,
         es6: true,
         jest: true,
     },
     extends: [
-        'plugin:jsdoc/recommended',
         'airbnb-base',
+        'plugin:jsdoc/recommended',
     ],
     parserOptions: {
         ecmaVersion: 'latest',
@@ -15,14 +14,7 @@ module.exports = {
     plugins: [
         'jsdoc',
     ],
-    settings: {
-        jsdoc: {
-            mode: 'closure',
-            tagNamePreference: {
-                return: 'returns',
-            },
-        },
-    },
+    reportUnusedDisableDirectives: true,
     rules: {
         indent: [
             'warn',
@@ -46,9 +38,8 @@ module.exports = {
         }],
         'jsdoc/require-param-description': ['warn', { contexts: ['any'] }],
         'jsdoc/require-param': ['warn', { checkDestructuredRoots: false }],
-        'jsdoc/newline-after-description': ['error', 'never'],
         'jsdoc/valid-types': ['off'],
-        'jsdoc/no-undefined-types': ['error', { definedTypes: ['ApiCollectionResultType', 'ApiWantlistResultType'] }],
+        'jsdoc/no-undefined-types': ['error', { definedTypes: ['ApiCollectionResultType', 'ApiWantlistResultType', 'BodyType'] }],
         // 'capitalized-comments': ['warn', 'always'], // Not always usefull as it also fix comment with code
         'no-underscore-dangle': ['error', { allow: ['_id', '_attributes', '__value__', '_text'] }],
         curly: ['warn', 'multi', 'consistent'],

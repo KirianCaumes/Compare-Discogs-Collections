@@ -1,5 +1,5 @@
-import mustach from 'mustache'
 import { readFileSync } from 'fs'
+import mustach from 'mustache'
 import { COLLECTION, COLLECTIONVSWANTLIST, WANTLIST } from '../data/constants.data'
 
 const indexHtml = readFileSync('./templates/index.html').toString()

@@ -17,4 +17,4 @@ app.get('/', mainController.getMain.bind(mainController))
 app.post('/', mainController.postMain.bind(mainController))
 
 // eslint-disable-next-line no-console
-app.listen(process.env.PORT || 3000, () => console.log('Listening'))
+app.listen(process.env.PORT || 3000, () => console.log(`Listening on ${process.env.PORT || 3000}`))
