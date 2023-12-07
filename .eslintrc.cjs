@@ -40,6 +40,7 @@ module.exports = {
         'jsdoc/require-param': ['warn', { checkDestructuredRoots: false }],
         'jsdoc/valid-types': ['off'],
         'jsdoc/no-undefined-types': ['error', { definedTypes: ['ApiCollectionResultType', 'ApiWantlistResultType', 'BodyType'] }],
+        'import/extensions': ['error', 'always'],
         // 'capitalized-comments': ['warn', 'always'], // Not always usefull as it also fix comment with code
         'no-underscore-dangle': ['error', { allow: ['_id', '_attributes', '__value__', '_text'] }],
         curly: ['warn', 'multi', 'consistent'],

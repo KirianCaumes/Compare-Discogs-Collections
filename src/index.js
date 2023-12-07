@@ -1,7 +1,7 @@
 import express from 'express'
 import * as dotenv from 'dotenv'
-import { MainController } from './controllers'
-import { DiscogsService } from './services'
+import { MainController } from './controllers/index.js'
+import { DiscogsService } from './services/index.js'
 
 dotenv.config()
 

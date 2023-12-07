@@ -14,8 +14,8 @@
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node --experimental-specifier-resolution=node src/index.js",
-    "start:dev": "node --experimental-specifier-resolution=node --watch src/index.js",
+    "start": "node src/index.js",
+    "start:dev": "node --watch src/index.js",
     "lint:fix": "eslint --ext .js src/ --fix",
     "lint": "eslint --ext .js src/"
   },
@@ -34,7 +34,7 @@
     "eslint-plugin-jsx-a11y": "^6.8.0"
   },
   "engines": {
-    "node": "18.x.x"
+    "node": "20.x.x"
   },
   "type": "module"
 }
