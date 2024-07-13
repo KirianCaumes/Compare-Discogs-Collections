@@ -10,6 +10,8 @@ const mainController = new MainController({ discogsService })
 
 const app = express()
 
+app.disable('x-powered-by')
+
 app.use(express.urlencoded({ extended: true }))
 app.use(express.static('public'))
 
