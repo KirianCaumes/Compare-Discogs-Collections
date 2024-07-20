@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta
+        http-equiv="content-type"
+        content="text/html; charset=UTF-8"
+    >
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+    <link
+        rel="stylesheet"
+        type="text/css"
+        href="style/index.css"
+    >
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bulma@1.0.1/css/bulma.min.css"
+    >
+    <script
+        defer
+        src="https://use.fontawesome.com/releases/v5.15.4/js/all.js"
+        integrity="sha384-rOA1PnstxnOBLzCLMcre8ybwbTmemjzdNlILg8O7z1lUkLXozs4DHonlDtnE7fpc"
+        crossorigin="anonymous"
+    ></script>
+    <link
+        rel="icon"
+        href="img/favicon.png"
+    >
+    <title>Discogs - Compare Two Collections</title>
+</head>
+
+<form method="POST">
+    <div class="container">
+        <br />
+        <h1 class="title">Discogs - Compare Two Collections <i class="fas fa-compact-disc"></i></h1>
+        {{#if error}}
+        <div class="notification is-danger is-light">
+            <button
+                class="delete"
+                onclick="onClickHideNotification(event)"
+                type="button"
+            ></button>
+            {{error}}
+        </div>
+        {{/if}}
+        <div class="columns">
+            <div class="column">
+                <div class="field">
+                    <label
+                        class="label"
+                        for="userOne"
+                    >
+                        What does this first user have...
+                    </label>
+                    <div class="control">
+                        <input
+                            class="input"
+                            type="text"
+                            placeholder="User One"
+                            name="userOne"
+                            required
+                            id="userOne"
+                            value="{{value.userOne}}"
+                        />
+                    </div>
+                </div>
+            </div>
+            <div class="button-reverse">
+                <button
+                    type="button"
+                    class="button is-link"
+                    onclick="onReverse();"
+                >
+                    <span class="icon is-small">
+                        <i class="fas fa-sync-alt"></i>
+                    </span>
+                </button>
+            </div>
+            <div class="column">
+                <div class="field">
+                    <label
+                        class="label"
+                        for="userTwo"
+                    >
+                        ...in this second user's collection/wantlist?
+                    </label>
+                    <div class="control">
+                        <input
+                            class="input"
+                            type="text"
+                            placeholder="User One"
+                            name="userTwo"
+                            required
+                            id="userTwo"
+                            value="{{value.userTwo}}"
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="columns is-vcentered">
+            <div class="column">
+                <div class="field">
+                    <label
+                        class="label"
+                        for="band"
+                    >
+                        Filter on band's name
+                    </label>
+                    <div class="control">
+                        <input
+                            class="input"
+                            type="text"
+                            placeholder="Band's name"
+                            id="band"
+                            name="band"
+                            value="{{value.band}}"
+                        />
+                    </div>
+                </div>
+            </div>
+            <div class="column search">
+                <label
+                    class="label"
+                    for="select-search"
+                >
+                    Compare on
+                </label>
+                <div class="field">
+                    <div class="control">
+                        <div class="select is-fullwidth">
+                            <select
+                                name="search"
+                                id="select-search"
+                            >
+                                <option
+                                    value="COLLECTION"
+                                    {{#if
+                                    value.isCollection}}selected{{/if}}
+                                >
+                                    Collection
+                                </option>
+                                <option
+                                    value="WANTLIST"
+                                    {{#if
+                                    value.isWantlist}}selected{{/if}}
+                                >
+                                    Wantlist
+                                </option>
+                                <option
+                                    value="COLLECTIONVSWANTLIST"
+                                    {{#if
+                                    value.isCollectionVsWantlist}}selected{{/if}}
+                                >
+                                    Collection vs Wantlist
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button
+            type="submit"
+            class="button is-link"
+        >
+            <span class="icon is-small">
+                <i class="fas fa-check"></i>
+            </span>
+            <span>Check</span>
+        </button>
+        <br /><br />
+        {{#if items.length}}
+        <h2 class="subtitle">
+            The list of releases for user two is displayed here. The green lines correspond to common releases between
+            the two users.
+        </h2>
+        <div class="table-container">
+            <table class="table is-bordered is-narrow is-fullwidth">
+                <thead>
+                    <tr>
+                        <th>Img</th>
+                        <th>Information</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each items}}
+                    <tr class="{{#if this.isCommon}}is-selected{{/if}}">
+                        <td>
+                            <img
+                                src="{{this.basic_information.thumb}}"
+                                loading="lazy"
+                            >
+                        </td>
+                        <td>
+                            <div>
+                                {{#each this.basic_information.artists}}
+                                <a
+                                    href="https://www.discogs.com/en/artist/{{id}}"
+                                    target="_blank"
+                                >{{this.name}}</a> -
+                                {{/each}}
+                                <a
+                                    href="https://www.discogs.com/en/release/{{id}}"
+                                    target="_blank"
+                                >{{this.basic_information.title}}</a>
+                                (
+                                {{#each this.basic_information.labels}}
+                                {{#if this.name}}
+                                {{this.name}} -
+                                {{/if}}
+                                {{/each}}
+
+                                {{#each this.basic_information.labels}}
+                                {{#if this.catno}}
+                                {{this.catno}} <span class="last-hidden">-</span>
+                                {{/if}}
+                                {{/each}}
+                                )
+                            </div>
+                            <div>
+                                {{#each this.basic_information.formats}}
+
+                                {{#if this.name}}
+                                {{this.name}}
+                                {{#unless this.description.length}}
+                                <span class="last-hidden">-</span>
+                                {{/unless}}
+                                {{/if}}
+
+                                {{#if this.descriptions.length}}
+                                {{#each this.descriptions}}
+                                {{this}} <span class="last-hidden">-</span>
+                                {{/each}}
+                                {{/if}}
+
+                                {{/each}}
+                            </div>
+                            <div>
+                                {{#if this.basic_information.year}}
+                                {{this.basic_information.year}}
+                                {{/if}}
+                            </div>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+        <div class="content">
+            {{#if value.isCollection}}
+            1️⃣ <a
+                href="https://www.discogs.com/user/{{value.userOne}}/collection"
+                target="_blank"
+            >{{value.userOne}}</a>
+            {{/if}}
+            {{#if value.isWantlist}}
+            1️⃣ <a
+                href="https://www.discogs.com/wantlist?user={{value.userOne}}"
+                target="_blank"
+            >{{value.userOne}}</a>
+            {{/if}}
+            {{#if value.isCollectionVsWantlist}}
+            1️⃣ <a
+                href="https://www.discogs.com/user/{{value.userOne}}/collection"
+                target="_blank"
+            >{{value.userOne}}</a>
+            {{/if}}
+            : {{total.userOne}}<br />
+
+            {{#if value.isCollection}}
+            2️⃣ <a
+                href="https://www.discogs.com/user/{{value.userTwo}}/collection"
+                target="_blank"
+            >{{value.userTwo}}</a>
+            {{/if}}
+            {{#if value.isWantlist}}
+            2️⃣ <a
+                href="https://www.discogs.com/wantlist?user={{value.userTwo}}"
+                target="_blank"
+            >{{value.userTwo}}</a>
+            {{/if}}
+            {{#if value.isCollectionVsWantlist}}
+            2️⃣ <a
+                href="https://www.discogs.com/wantlist?user={{value.userTwo}}"
+                target="_blank"
+            >{{value.userTwo}}</a>
+            {{/if}}
+            : {{total.userTwo}}<br />
+
+            {{#if value.isCollection}}
+            👉 <a
+                href="https://www.discogs.com/user/{{value.userOne}}/collection"
+                target="_blank"
+            >{{value.userOne}}</a>
+            {{/if}}
+            {{#if value.isWantlist}}
+            👉 <a
+                href="https://www.discogs.com/wantlist?user={{value.userOne}}"
+                target="_blank"
+            >{{value.userOne}}</a>
+            {{/if}}
+            {{#if value.isCollectionVsWantlist}}
+            👉 <a
+                href="https://www.discogs.com/user/{{value.userOne}}/collection"
+                target="_blank"
+            >{{value.userOne}}</a>
+            {{/if}}
+            owns {{total.common}} of
+            {{#if value.isCollection}}
+            <a
+                href="https://www.discogs.com/user/{{value.userTwo}}/collection"
+                target="_blank"
+            >{{value.userTwo}}</a>
+            {{/if}}
+            {{#if value.isWantlist}}
+            <a
+                href="https://www.discogs.com/wantlist?user={{value.userTwo}}"
+                target="_blank"
+            >{{value.userTwo}}</a>
+            {{/if}}
+            {{#if value.isCollectionVsWantlist}}
+            <a
+                href="https://www.discogs.com/wantlist?user={{value.userTwo}}"
+                target="_blank"
+            >{{value.userTwo}}</a>
+            {{/if}}'s releases ({{total.percent}}).
+            <br />
+        </div>
+        {{/if}}
+        <p class="credit">
+            By <a
+                href="https://kiriancaumes.fr"
+                target="_blank"
+            >
+                Kirian CAUMES</a> - <a
+                href="https://github.com/KirianCaumes/DiscogsCompareTwoCollection"
+                target="_blank"
+            >
+                Github
+            </a>
+        </p>
+        <br />
+        <br />
+    </div>
+</form>
+
+<script>
+    function onReverse() {
+        let temp = document.querySelector('#userTwo').value
+        document.querySelector('#userTwo').value = document.querySelector('#userOne').value
+        document.querySelector('#userOne').value = temp
+    }
+
+    function onClickHideNotification(ev) {
+        ev.currentTarget.parentElement.remove()
+    }
+
+    document.addEventListener('submit', () => {
+        // Add a timeout to prevent server from getting `undefined` from fields
+        setTimeout(() => {
+            document.querySelector('button[type="submit"]').classList.add('is-loading')
+            document.querySelectorAll('button:not(.is-loading), input, select').forEach(el => {
+                el.setAttribute('disabled', 'true')
+            })
+        }, 1)
+    })
+</script>
+
+</html>

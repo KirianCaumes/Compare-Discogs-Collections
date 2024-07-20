@@ -1,0 +1,21 @@
+version: '3'
+services:
+  discogs-compare-two-collections_container:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    stdin_open: true
+    tty: true
+    volumes:
+      - ../:/app_discogs-compare-two-collections:rw
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - 5000:5000
+      - 3000:3000
+    networks:
+      - discogs-compare-two-collections_network
+
+networks:
+  discogs-compare-two-collections_network:
+    driver: 'bridge'

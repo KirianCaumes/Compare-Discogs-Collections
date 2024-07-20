@@ -1,0 +1,24 @@
+{
+  "name": "discogs-compare-two-collections",
+  "dockerComposeFile": "docker-compose.yml",
+  "postCreateCommand": "bash .devcontainer/init.sh",
+  "service": "discogs-compare-two-collections_container",
+  "workspaceFolder": "/app_discogs-compare-two-collections",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "gruntfuggly.todo-tree",
+        "sibiraj-s.vscode-scss-formatter",
+        "firefox-devtools.vscode-firefox-debug",
+        "msjsdiag.debugger-for-chrome",
+        "davidanson.vscode-markdownlint",
+        "dbaeumer.vscode-eslint",
+        "stylelint.vscode-stylelint",
+        "pflannery.vscode-versionlens",
+        "esbenp.prettier-vscode",
+        "streetsidesoftware.code-spell-checker",
+        "andrejunges.handlebars"
+      ]
+    }
+  }
+}

@@ -5,62 +5,18 @@
     padding: 0.75rem 0;
 }
 
-.search label {
-    margin-bottom: 0.25em;
-}
-
-.search .field,
-.search .select,
-.search select {
-    width: 100%;
-}
-
-.search select {
-    border-color: #5e6d6f!important;
-}
-
-.search select:hover {
-    border-color: #8c9b9d!important;
-}
-
-.search select:active, .search select:focus {
-    border-color: #1abc9c!important;
-    box-shadow: 0 0 0 .125em rgba(26,188,156,.25);
-}
-
-/* .search .select:not(.is-multiple) {
-    height: 2.5em !important;
-}
-
-.search select {
-    height: 40px !important;
-} */
-
-.table {
-    border-collapse: unset !important;
-}
-.table td.is-selected,
-.table th.is-selected,
-.table tr.is-selected {
-    background-color: #375a7f !important;
+a {
+    text-decoration: underline !important;
 }
 
 .table img {
-    max-width: 75px;
-    min-height: 45px;
-}
-
-.table a {
-    color: #1abc9c !important;
-}
-.table a:hover {
-    color: #1dd2af !important;
+    object-fit: contain;
+    width: 100%;
+    height: 100px;
+    min-width: 50px;
+    display: block;
 }
 
 .table .last-hidden:last-child {
     display: none;
-}
-
-.credit {
-    position: absolute;
 }

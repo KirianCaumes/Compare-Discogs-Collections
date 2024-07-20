@@ -1,56 +1,98 @@
+/**
+ * {@link https://eslint.org/docs/latest/use/configure/configuration-files} Documentation
+ * @type {import('eslint').Linter.Config}
+ */
 module.exports = {
     env: {
-        es6: true,
+        node: true,
         jest: true,
     },
     extends: [
         'airbnb-base',
-        'plugin:jsdoc/recommended',
+        'airbnb-typescript/base',
+        'plugin:@typescript-eslint/recommended',
+        /**
+         * Turns off all rules that are unnecessary or might conflict with Prettier.
+         * Check conflict between Eslint and Prettier with: `npx eslint-config-prettier .eslintrc.js`.
+         */
+        'prettier',
     ],
     parserOptions: {
-        ecmaVersion: 'latest',
+        project: 'tsconfig.json',
         sourceType: 'module',
     },
-    plugins: [
-        'jsdoc',
-    ],
+    plugins: ['jsdoc'],
     reportUnusedDisableDirectives: true,
     rules: {
-        indent: [
-            'warn',
-            4,
+        /** {@link https://github.com/microsoft/TypeScript/wiki/Performance#preferring-interfaces-over-intersections} */
+        '@typescript-eslint/consistent-type-definitions': ['warn', 'interface'],
+        '@typescript-eslint/naming-convention': [
+            // eslint-disable-next-line global-require, @typescript-eslint/no-var-requires
+            ...require('eslint-config-airbnb-typescript/lib/shared').rules['@typescript-eslint/naming-convention'],
             {
-                SwitchCase: 1,
+                selector: 'variable',
+                types: ['boolean'],
+                format: ['PascalCase'],
+                prefix: ['is', 'should', 'has', 'can', 'did', 'will'],
             },
         ],
-        semi: ['warn', 'never'],
-        'jsdoc/require-jsdoc': ['warn', {
-            checkConstructors: false,
-            contexts: [
-                'ClassDeclaration', 'FunctionDeclaration', 'MethodDefinition',
-                { context: 'TSPropertySignature', inlineCommentBlock: true }],
-        }],
-        'jsdoc/require-description': ['warn', {
-            checkConstructors: false,
-            contexts: [
-                'TSPropertySignature', 'ClassDeclaration', 'ArrowFunctionExpression', 'FunctionDeclaration', 'FunctionExpression', 'MethodDefinition',
-            ],
-        }],
+        '@typescript-eslint/explicit-function-return-type': ['warn', { allowExpressions: true }],
+        '@typescript-eslint/consistent-type-imports': ['error'],
+        /** {@link https://tkdodo.eu/blog/array-types-in-type-script} */
+        '@typescript-eslint/array-type': ['error', { default: 'generic' }],
+        'jsdoc/require-jsdoc': [
+            'warn',
+            {
+                checkConstructors: false,
+                contexts: [
+                    'ClassDeclaration',
+                    'FunctionDeclaration',
+                    'MethodDefinition',
+                    { context: 'TSPropertySignature', inlineCommentBlock: true },
+                ],
+            },
+        ],
+        'jsdoc/require-description': [
+            'warn',
+            {
+                checkConstructors: false,
+                contexts: [
+                    'TSPropertySignature',
+                    'ClassDeclaration',
+                    'ArrowFunctionExpression',
+                    'FunctionDeclaration',
+                    'FunctionExpression',
+                    'MethodDefinition',
+                ],
+            },
+        ],
         'jsdoc/require-param-description': ['warn', { contexts: ['any'] }],
         'jsdoc/require-param': ['warn', { checkDestructuredRoots: false }],
-        'jsdoc/valid-types': ['off'],
-        'jsdoc/no-undefined-types': ['error', { definedTypes: ['ApiCollectionResultType', 'ApiWantlistResultType', 'BodyType'] }],
-        'import/extensions': ['error', 'always'],
-        // 'capitalized-comments': ['warn', 'always'], // Not always usefull as it also fix comment with code
+        'import/order': ['error', { groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index', 'object', 'type'] }],
+        'capitalized-comments': [
+            'warn',
+            'always',
+            {
+                ignorePattern: 'cspell|prettier',
+            },
+        ],
+        camelcase: ['error'],
+        'no-restricted-syntax': [
+            // eslint-disable-next-line global-require, @typescript-eslint/no-var-requires, import/no-extraneous-dependencies
+            ...require('eslint-config-airbnb-base/rules/style').rules['no-restricted-syntax'],
+            {
+                selector: 'TSEnumDeclaration',
+                message:
+                    "Do not declare Enum, prefer 'as const' assertions. See: https://www.typescriptlang.org/docs/handbook/enums.html#objects-vs-enums",
+            },
+        ],
         'no-underscore-dangle': ['error', { allow: ['_id', '_attributes', '__value__', '_text'] }],
-        curly: ['warn', 'multi', 'consistent'],
-        'template-curly-spacing': 'off', // Issue: https://stackoverflow.com/questions/48391913/eslint-error-cannot-read-property-range-of-null
+        curly: ['warn', 'all'],
         'max-len': ['warn', { code: 160 }],
-        'comma-dangle': ['warn', 'always-multiline'],
-        'nonblock-statement-body-position': ['warn', 'below'],
-        'arrow-parens': ['warn', 'as-needed'],
-        'function-paren-newline': ['error', 'consistent'],
+        'no-restricted-imports': ['error', { patterns: ['../*', './*'] }],
+        'no-restricted-modules': ['error', { patterns: ['../*', './*'] }],
         'no-extra-boolean-cast': ['error', { enforceForLogicalOperands: true }],
         'no-unused-vars': ['warn', { vars: 'all', args: 'after-used', ignoreRestSiblings: true }], // Must be at the end
     },
+    ignorePatterns: ['!.lintstagedrc.js', '!.prettierrc.js'],
 }

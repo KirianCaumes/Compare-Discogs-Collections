@@ -1,14 +1,32 @@
 {
   "editor.formatOnSave": true,
   "[javascript]": {
-    "editor.tabSize": 4,
-    "editor.detectIndentation": false
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[handlebars]": {
+    "editor.defaultFormatter": "vscode.html-language-features"
+  },
+  "html.format.wrapAttributes": "force-expand-multiline",
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "vscode.markdown-language-features"
   },
   "editor.codeActionsOnSave": {
     "source.fixAll": "explicit"
   },
   "eslint.workingDirectories": ["./"],
-  "eslint.alwaysShowStatus": true,
+  "prettier.requireConfig": true,
   "versionlens.suggestions.showOnStartup": true,
   "terminal.integrated.defaultProfile.linux": "bash",
   "terminal.integrated.profiles.linux": {
@@ -17,6 +35,7 @@
       "icon": "terminal-bash"
     }
   },
-  "html.format.wrapAttributes": "force-expand-multiline",
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "javascript.preferences.importModuleSpecifier": "non-relative",
   "javascript.preferences.importModuleSpecifierEnding": "js"
 }
