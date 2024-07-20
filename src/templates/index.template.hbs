@@ -192,10 +192,15 @@
                     {{#each items}}
                     <tr class="{{#if this.isCommon}}is-selected{{/if}}">
                         <td>
-                            <img
-                                src="{{this.basic_information.thumb}}"
-                                loading="lazy"
+                            <a
+                                href="https://www.discogs.com/en/release/{{id}}"
+                                target="_blank"
                             >
+                                <img
+                                    src="{{this.basic_information.thumb}}"
+                                    loading="lazy"
+                                >
+                            </a>
                         </td>
                         <td>
                             <div>
@@ -253,19 +258,19 @@
         </div>
         <div class="content">
             {{#if value.isCollection}}
-            1️⃣ <a
+            💁‍♀️ <a
                 href="https://www.discogs.com/user/{{value.userOne}}/collection"
                 target="_blank"
             >{{value.userOne}}</a>
             {{/if}}
             {{#if value.isWantlist}}
-            1️⃣ <a
+            💁‍♀️ <a
                 href="https://www.discogs.com/wantlist?user={{value.userOne}}"
                 target="_blank"
             >{{value.userOne}}</a>
             {{/if}}
             {{#if value.isCollectionVsWantlist}}
-            1️⃣ <a
+            💁‍♀️ <a
                 href="https://www.discogs.com/user/{{value.userOne}}/collection"
                 target="_blank"
             >{{value.userOne}}</a>
@@ -273,19 +278,19 @@
             : {{total.userOne}}<br />
 
             {{#if value.isCollection}}
-            2️⃣ <a
+            💁‍♂️ <a
                 href="https://www.discogs.com/user/{{value.userTwo}}/collection"
                 target="_blank"
             >{{value.userTwo}}</a>
             {{/if}}
             {{#if value.isWantlist}}
-            2️⃣ <a
+            💁‍♂️ <a
                 href="https://www.discogs.com/wantlist?user={{value.userTwo}}"
                 target="_blank"
             >{{value.userTwo}}</a>
             {{/if}}
             {{#if value.isCollectionVsWantlist}}
-            2️⃣ <a
+            💁‍♂️ <a
                 href="https://www.discogs.com/wantlist?user={{value.userTwo}}"
                 target="_blank"
             >{{value.userTwo}}</a>
