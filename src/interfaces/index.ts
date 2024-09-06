@@ -1,5 +1,5 @@
-import ApiCollectionResult from 'interfaces/api-collection-result.interface'
-import ApiWantlistResult from 'interfaces/api-wantlist-result.interface'
-import Body from 'interfaces/body.interface'
+import type ApiCollectionResult from 'interfaces/api-collection-result.interface'
+import type ApiWantlistResult from 'interfaces/api-wantlist-result.interface'
+import type Body from 'interfaces/body.interface'
 
-export { ApiCollectionResult, ApiWantlistResult, Body }
+export type { ApiCollectionResult, ApiWantlistResult, Body }

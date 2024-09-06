@@ -80,7 +80,7 @@ export default class DefaultController {
                         .filter(userItem =>
                             userItem.basic_information.artists.some(x => x.name?.toLowerCase().includes(band?.toLowerCase()) ?? true),
                         )?.length ?? 0,
-            )
+            ) as [number, number]
 
             return res.send(
                 Handlebars.compile(await readFile('./src/templates/index.template.hbs', 'utf-8'))({
