@@ -20,7 +20,7 @@
   ],
   "author": "KirianCaumes",
   "engines": {
-    "node": "20.x.x"
+    "node": "24.x.x"
   },
   "type": "module",
   "scripts": {
