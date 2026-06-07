@@ -36,5 +36,6 @@ module.exports = {
         'COLLECTIONVSWANTLIST',
         'vcentered',
         'fullwidth',
+        'adduser',
     ],
 }
