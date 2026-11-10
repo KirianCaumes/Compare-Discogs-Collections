@@ -18,5 +18,11 @@ app.use(express.static('public'))
 app.get('/', defaultController.getDefault.bind(defaultController))
 app.post('/', defaultController.postDefault.bind(defaultController))
 
-// eslint-disable-next-line no-console
-app.listen(process.env.PORT || 3000, () => console.log(`Listening on ${process.env.PORT || 3000}`))
+app.listen(process.env.PORT || 3000, error => {
+    // Express 5 passes listen errors (e.g. port in use) to this callback instead of throwing
+    if (error) {
+        throw error
+    }
+    // eslint-disable-next-line no-console
+    console.log(`Listening on ${process.env.PORT || 3000}`)
+})
